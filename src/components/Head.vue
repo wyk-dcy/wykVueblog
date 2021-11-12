@@ -15,6 +15,8 @@
             <el-menu-item index="3"><router-link to="/blogTag">标签</router-link></el-menu-item>
             <el-menu-item index="4"><router-link to="/message">留言板</router-link></el-menu-item>
             <el-menu-item index="5"><router-link to="/blogLinks">友链</router-link></el-menu-item>
+            <el-menu-item index="5"><router-link to="/blogVideo">视频</router-link></el-menu-item>
+            <el-menu-item index="5"><router-link to="/blogBook">书籍</router-link></el-menu-item>
             <el-menu-item index="6" v-if="this.$router.currentRoute.path !='/blogSearch/'">
               <div  @click="goToSearch">
                   <el-input size="small"
@@ -25,6 +27,7 @@
               </div>
             
             </el-menu-item>
+             <el-menu-item index="5"><router-link to="/login">登录</router-link></el-menu-item>
 
           </el-menu>
           
