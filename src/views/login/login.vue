@@ -10,17 +10,17 @@
     ref="loginForm"
   >
     <h1 class="loginTitle">博客登录</h1>
-    <el-form-item prop="user">
+    <el-form-item prop="username">
       <el-input
         type="text"
-        placeholder="请输入手机号或者邮箱号"
+        placeholder="请输入手机号"
         required="required"
-        v-model="loginForm.user"
+        v-model="loginForm.username"
         auto-complete="off"
         @keyup.enter.native="submitLogin"
       ></el-input>
     </el-form-item>
-    <el-form-item prop="pass">
+    <el-form-item prop="password">
       <el-input
         type="password"
         placeholder="请输入密码"
@@ -42,14 +42,14 @@ export default {
   data() {
     return {
       loginForm: {
-        username: "admin",
-        password: "123",
+        username: "",
+        password: "",
       },
       checked: true,
       rules: {
         //required:true:用户名必填  如果没填就弹出““””“"请输入用户名",trigger:blur 触发的方式是blur
         username: [
-          { required: true, message: "用户名不能为空", trigger: "blur" },
+          { required: true, message: "手机号不能为空", trigger: "blur" },
         ],
         password: [
           { required: true, message: "密码不能为空", trigger: "blur" },
@@ -63,19 +63,19 @@ export default {
       this.$refs.loginForm.validate((validate) => {
         // Element自带的校验
         if (validate) {
-          //显示加载样式
-          this.loading = true;
-          //这是在api.js封装的请求
-          this.postKeyValueRequest("/doLogin", this.loginForm).then((resp) => {
-            //隐藏加载样式
-            this.loading = false;
-            if (resp) {
-              //resp：从服务端拿到的数据  用户的数据要保存到哪里？ 保存在sessionStorage  关闭浏览器就没了
-              window.sessionStorage.setItem("user", JSON.stringify(resp.obj));
-              //页面跳转  replace：替换  用push的话，可以使用后退按钮回到登录页，用replace不可以回到登录页
-              this.$router.replace("/admin/home");
-            }
-          });
+           this.axios
+            .post(
+              "/user/login?username=" +
+                this.loginForm.username +
+                "&password=" +
+                this.loginForm.password
+            )
+            .then((resp) => {
+              console.log(resp.data);
+              window.sessionStorage.setItem("user", JSON.stringify(resp.data));
+              console.log(JSON.stringify(resp.data))
+              this.$router.replace("/home");
+            });
         } else {
           this.$message.error("请输入所有字段");
           return false;

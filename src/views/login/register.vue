@@ -11,26 +11,26 @@
       ref="ruleForm"
     >
       <h1 class="registerTitle">博客注册</h1>
-       <el-form-item prop="user1">
+       <el-form-item prop="username">
          <el-input
           type="text"
           placeholder="用户名"
           required="required"
-          v-model="ruleForm.user1"
+          v-model="ruleForm.username"
           prefix-icon="el-icon-user-solid"
         ></el-input>
          </el-form-item
       >
-       <el-form-item prop="mobile">
+       <el-form-item prop="telephone">
          <el-input
           class="phone-input"
-          placeholder="手机号/邮箱"
-          v-model="ruleForm.mobile"
+          placeholder="手机号"
+          v-model="ruleForm.telephone"
           prefix-icon="el-icon-mobile-phone"
         ></el-input>
          </el-form-item
       >
-       <el-form-item prop="code" class="phone" v-show="yzmshow">
+       <el-form-item prop="code" v-show="yzmshow">
          <el-input
           v-model="ruleForm.code"
           placeholder="验证码"
@@ -52,11 +52,11 @@
         >
          </el-form-item
       >
-       <el-form-item prop="pass">
+       <el-form-item prop="password">
          <el-input
           type="password"
           placeholder="请输入密码"
-          v-model="ruleForm.pass"
+          v-model="ruleForm.password"
           prefix-icon="el-icon-lock"
         ></el-input>
          </el-form-item
@@ -71,7 +71,7 @@
          </el-form-item
       >
        <el-form-item class="btn-form">
-         <el-button type="primary" style="width: 100%" @click="submitRegister"
+         <el-button type="primary" style="width: 100%" @click="submitRegister()"
           >注册</el-button
         >
          <!-- <el-button @click="resetForm('ruleForm')">重置</el-button> -->
@@ -93,28 +93,27 @@ export default {
         if (value) {
           this.axios
             .post("/blog/check", {
-              username: this.ruleForm.user1,
+              username: this.ruleForm.username,
             })
             .then((response) => (this.blogData = response.data));
-          if (this.blogData.obj) {
-          } else {
+          if (!this.blogData.obj && this.blogData.obj != null) {
             return callback(new Error("该用户名已经被注册"));
+          } else {
+            callback();
           }
         }
       }
     };
     var validatePass1 = async (rule, value, callback) => {
       if (value === "") {
-        callback(new Error("手机号或者邮箱不能为空"));
+        callback(new Error("手机号不能为空"));
       } else {
         const reg = /^1[3|4|5|7|8][0-9]\d{8}$/;
-        // eslint-disable-next-line no-useless-escape
-        const reg2 = /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/;
-        if (reg.test(value) || reg2.test(value)) {
+        if (reg.test(value)) {
           this.yzmshow = true;
           callback();
         } else {
-          callback(new Error("请输入正确的手机号或者邮箱"));
+          callback(new Error("请输入正确的手机号"));
         }
       }
     };
@@ -142,7 +141,7 @@ export default {
     var validatePass2 = (rule, value, callback) => {
       if (value === "") {
         callback(new Error("请再次输入密码"));
-      } else if (value !== this.ruleForm.pass) {
+      } else if (value !== this.ruleForm.password) {
         callback(new Error("两次输入密码不一致!"));
       } else {
         callback();
@@ -162,12 +161,12 @@ export default {
       timer: null,
       yzmshow: false,
       ruleForm: {
-        user1: "",
+        username: "",
         pass1: "",
-        pass: "",
+        password: "",
         checkPass: "",
         zhecode: "",
-        mobile: "",
+        telephone: "",
         phoneCode: "",
         emailCode: "",
         code: "",
@@ -186,14 +185,14 @@ export default {
             trigger: "blur",
           },
         ],
-        user1: [
+        username: [
           {
             required: true,
             validator: validateUser1,
             trigger: "blur",
           },
         ],
-        pass1: [
+        telephone: [
           {
             required: true,
             validator: validatePass1,
@@ -201,7 +200,7 @@ export default {
           },
         ],
         // 密码
-        pass: [
+        password: [
           {
             required: true,
             validator: validatePass,
@@ -234,20 +233,21 @@ export default {
       this.$refs.ruleForm.validate((validate) => {
         // Element自带的校验
         if (validate) {
-          //显示加载样式
-          this.loading = true;
-          //这是在api.js封装的请求
-          this.postKeyValueRequest("/blog/register", this.ruleForm).then(
-            (resp) => {
-              //隐藏加载样式
-              this.loading = false;
-              if (resp) {
-                //resp：从服务端拿到的数据  用户的数据要保存到哪里？ 保存在sessionStorage  关闭浏览器就没了
-                //页面跳转  replace：替换  用push的话，可以使用后退按钮回到登录页，用replace不可以回到登录页
-                this.$router.replace("/home");
-              }
-            }
-          );
+          this.axios
+            .post(
+              "/blog/register?username=" +
+                this.ruleForm.username +
+                "&password=" +
+                this.ruleForm.password +
+                "&telephone=" +
+                this.ruleForm.telephone +
+                "&code=" +
+                this.ruleForm.code
+            )
+            .then((resp) => {
+              console.log(resp);
+               this.$router.replace("/login");
+            });
         } else {
           this.$message.error("请输入所有字段");
           return false;
@@ -256,9 +256,8 @@ export default {
     },
     getCode() {
       this.axios
-        .post("/blog/sendVerifyCode?telephone=" + this.ruleForm.mobile)
-        .then((resp) => {
-        });
+        .post("/blog/sendVerifyCode?telephone=" + this.ruleForm.telephone)
+        .then((resp) => {});
     },
   },
 };
