@@ -5,9 +5,8 @@ import router from './router'
 import ElementUI from 'element-ui';  //引入Element ui
 import 'element-ui/lib/theme-chalk/index.css';
 import axios from 'axios';
-
 Vue.prototype.axios = axios;
-// axios.defaults.baseURL = "/api"
+axios.defaults.baseURL = "http://localhost:8081"
 axios.defaults.withCredentials = true
 Vue.use(axios);
 

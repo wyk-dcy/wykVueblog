@@ -29,7 +29,7 @@
           ><router-link to="/blogLinks">友链</router-link></el-menu-item
         >
         <el-menu-item index="6"
-          ><router-link to="/blogVideo">视频</router-link></el-menu-item
+          ><router-link to="/blogPhoto">照片</router-link></el-menu-item
         >
         <el-menu-item index="7"
           ><router-link to="/blogBook">书籍</router-link></el-menu-item
@@ -58,7 +58,9 @@
               <i><img :src="user==null ? null : user.avatar" alt="" /></i>
             </span>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item command="userInfo">个人中心</el-dropdown-item>
+              <el-dropdown-item command="aboutUs">个人简介</el-dropdown-item>
+              <el-dropdown-item command="securityResearch">个人技能</el-dropdown-item>
+              <el-dropdown-item command="workExperience">工作经历</el-dropdown-item>
               <el-dropdown-item command="setting">设置</el-dropdown-item>
               <!--disabled:禁用的    divided:有分隔线-->
               <el-dropdown-item command="logout" divided
@@ -106,9 +108,8 @@ export default {
           type: "warning",
         })
           .then(() => {
-            this.getRequest("/logout");
             window.sessionStorage.removeItem("user");
-            this.$router.replace("/");
+            location.reload();
           })
           .catch(() => {
             this.$message({
@@ -116,6 +117,12 @@ export default {
               message: "已取消注销",
             });
           });
+      }else if(cmd == "aboutUs"){
+        this.$router.push("/aboutUs");
+      }else if(cmd == "securityResearch"){
+        this.$router.push("/securityResearch");
+      }else if(cmd == "workExperience"){
+        this.$router.push("/workExperience");
       }
     },
   },

@@ -7,7 +7,7 @@ let proxyObj = {};
 proxyObj['/'] = {
     ws: false,  //关掉websocket
     // target: 'http://47.107.158.11:8082', //目标转发的地址
-    target: 'http://localhost:8082', //目标转发的地址
+    target: 'http://localhost:8081', //目标转发的地址
     changeOrigin: true,
     pathRewrite:{  //请求地址重写
         '^/': ''  //拦截到的地址不去修改它
@@ -22,3 +22,4 @@ module.exports = {
         proxy: proxyObj  //代理对象
     }
 }
+
