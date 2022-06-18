@@ -44,9 +44,6 @@
             </el-input>
           </div>
         </el-menu-item>
-        <el-menu-item index="9" v-show="user == null"
-          ><router-link to="/login">登录</router-link></el-menu-item
-        >
         <el-menu-item index="9" v-show="user != null">
           <el-dropdown
             v-show="user != null"
